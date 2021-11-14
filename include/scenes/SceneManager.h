@@ -39,11 +39,12 @@ class SceneManager {
 		static Scene *				getScene(std::string const & name);
 		static std::string const &	getSceneName();
 	//	static uint16_t				getFps();
-	//	static bool					isSceneChangedInCurFrame();
+		static bool					isSceneChangedInCurFrame();
 	//	static void					openCheatCode(bool open);
 	//	static void					openCheatCodeForTime(uint64_t ms);
 	//	static bool					isCheatCodeOpen();
 		static void					quit();
+		
 
 	//	/* Exceptions */
 	//	/**
@@ -80,7 +81,7 @@ class SceneManager {
 		Scene *			_loadScene(std::string const & name);
 		Scene *			_getScene(std::string const & name);
 		std::string const &	_getSceneName() const;
-	//	bool				_isSceneChangedInCurFrame() const;
+		bool				_isSceneChangedInCurFrame() const;
 	//	void				_openCheatCode(bool open);
 	//	void				_openCheatCodeForTime(uint64_t ms);
 	//	bool				_isCheatCodeOpen() const;

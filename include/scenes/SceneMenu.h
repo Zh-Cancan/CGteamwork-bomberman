@@ -50,7 +50,8 @@ class SceneMenu : public Scene {
 		uint32_t			getNbUIElements() const;*/
 
 	protected:
-		
+
+		bool					_draw3dMenu;  /**< True if the menu background is in 3D */
 		/* blur effect ?transparentBox实现 需要吗？*/
 		bool	_blurEnabled;  /**< If enabled blur transparent ui 模糊效果*/
 		static	std::vector<uint8_t>		_aMaskData;  /**< Blur mask texture raw data */

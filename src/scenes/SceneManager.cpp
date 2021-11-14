@@ -23,25 +23,25 @@
  * @brief Construct a new Scene Manager:: Scene Manager object
  */
 SceneManager::SceneManager()
-:_isInit(false),
-  _gameInfo(),
-  _gui(nullptr),
-  _dtTime(0.0f),
-  _scene(SceneNames::LOADING),
-//  _isInCheatCode(false),
-//  _showCheatCodeTextTime(0),
-  _fps(60)
-//  _sceneLoadedCurrentFrame(false)
+	:_isInit(false),
+	_gameInfo(),
+	_gui(nullptr),
+	_dtTime(0.0f),
+	_scene(SceneNames::GAME),
+	//  _isInCheatCode(false),
+	//  _showCheatCodeTextTime(0),
+	_fps(60)
+	//  _sceneLoadedCurrentFrame(false)
 {}
 
 
-SceneManager::SceneManager(SceneManager const & src) {
+SceneManager::SceneManager(SceneManager const& src) {
 	*this = src;
 }
 
 
 SceneManager::~SceneManager() {
-	
+
 }
 
 /**
@@ -50,7 +50,7 @@ SceneManager::~SceneManager() {
  * @param rhs The object to copy
  * @return SceneManager& A reference to the copied object
  */
-SceneManager & SceneManager::operator=(SceneManager const & rhs) {
+SceneManager& SceneManager::operator=(SceneManager const& rhs) {
 	(void)rhs;
 	logErr("You should never call copy operator for SceneManager");
 	return *this;
@@ -61,7 +61,7 @@ SceneManager & SceneManager::operator=(SceneManager const & rhs) {
  *
  * @return SceneManager& the instance of the SceneManager
  */
-SceneManager & SceneManager::get() {
+SceneManager& SceneManager::get() {
 	static SceneManager	instance;
 	return instance;
 }
@@ -81,7 +81,7 @@ bool SceneManager::init() {
  */
 bool SceneManager::_init() {
 	if (_sceneMap.find(SceneNames::MAIN_MENU) != _sceneMap.end()) {
-		std::cout<<"SceneManager::init already called";
+		std::cout << "SceneManager::init already called";
 		return false;
 	}
 
@@ -92,24 +92,28 @@ bool SceneManager::_init() {
 	}
 
 	/* 创建loading scene */
-	_scene = SceneNames::LOADING;
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::LOADING, new SceneLoading(_gui, _dtTime)));
+	_scene = SceneNames::GAME;
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME, new SceneGame(_gui, _dtTime))); 
+	/*_scene = SceneNames::LOADING;
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::LOADING, new SceneLoading(_gui, _dtTime)));*/
 	try {
 		if (_sceneMap[_scene]->init() == false) {
 			std::cout << "failed to init scene: loading";
 			return false;
 		}
-	} catch (std::exception const & e) {
+	}
+	catch (std::exception const& e) {
 		std::cout << "Error : " << e.what();
 		return false;
 	}
 
-	try {
-		_sceneMap[_scene]->load();  // load first scene
-	} catch (std::exception const & e) {
-		std::cout<<"Error : " << e.what();
-		return false;
-	}
+	//try {
+	//	_sceneMap[_scene]->load();  // load first scene
+	//}
+	//catch (std::exception const& e) {
+	//	std::cout << "Error : " << e.what();
+	//	return false;
+	//}
 
 	/* draw */
 	Inputs::update();
@@ -121,28 +125,30 @@ bool SceneManager::_init() {
 	_gui->postDraw();
 
 	// load and init 3d models
-	
+
 
 	// create and init all scene
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::MAIN_MENU, new SceneMainMenu(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::LEVEL_SELECTION,
+	/*_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::MAIN_MENU, new SceneMainMenu(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::LEVEL_SELECTION,
 		new SceneLevelSelection(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::GAME, new SceneGame(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::GAME_OVER, new SceneGameOver(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::VICTORY, new SceneVictory(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::EXIT, new SceneExit(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::LOADGAME, new SceneLoadGame(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene *>(SceneNames::END_GAME, new SceneEndGame(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME, new SceneGame(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME_OVER, new SceneGameOver(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::VICTORY, new SceneVictory(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::EXIT, new SceneExit(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::LOADGAME, new SceneLoadGame(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::END_GAME, new SceneEndGame(_gui, _dtTime)));*/
+	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME, new SceneGame(_gui, _dtTime)));
 
 	for (auto it = _sceneMap.begin(); it != _sceneMap.end(); it++) {
 		try {
 			if (it->first == SceneNames::LOADING)
 				continue;
 			if (it->second->init() == false) {
-				std::cout<<"failed to init scene: " << it->first;
+				std::cout << "failed to init scene: " << it->first;
 				return false;
 			}
-		} catch (std::exception const & e) {
+		}
+		catch (std::exception const& e) {
 			std::cout << "Error : " << e.what();
 			return false;
 		}
@@ -157,6 +163,7 @@ bool SceneManager::_init() {
  * @return false if failure
  */
 bool SceneManager::run() {
+	//读取screen的帧率
 	float		maxFrameDuration = 1000 / s.j("screen").u("fps");
 
 	return SceneManager::get()._run(maxFrameDuration);
@@ -168,8 +175,6 @@ bool SceneManager::run() {
  */
 bool SceneManager::_run(float maxFrameDuration) {
 	std::chrono::milliseconds	lastLoopMs = getMs();
-	bool firstLoop = true;
-	(void)firstLoop;
 
 	while (true) {
 		/* reset variables */
@@ -178,16 +183,16 @@ bool SceneManager::_run(float maxFrameDuration) {
 		lastLoopMs = getMs();
 		_fps = 1 / _dtTime;
 
-		if (_sceneMap.find(_scene) == _sceneMap.end()) {
-			logWarn("invalid scene name: " << _scene);
-		}
-		else {
+		/*if (_sceneMap.find(_scene) == _sceneMap.end()) {
+			std::cout << "invalid scene name: " << _scene << "\n";
+		}*/
+		/*else {*/
 			/* update & draw scene */
 			if (_update() == false)
 				return false;
 			if (_draw() == false)
 				return false;
-		}
+		/*}*/
 
 		/* quit if it's the end of the game */
 		if (_gameInfo.quit) {
@@ -198,73 +203,42 @@ bool SceneManager::_run(float maxFrameDuration) {
 		std::chrono::milliseconds loopDuration = getMs() - lastLoopMs;
 		float	frameDuration = loopDuration.count();
 
-		if (frameDuration > maxFrameDuration) {
-			#if DEBUG_FPS_LOW == true
-				if (!firstLoop) {
-					logDebug("update loop slow -> " << frameDuration << "ms / " <<
-					maxFrameDuration << "ms (" << s.j("screen").u("fps") << "fps)");
-				}
-			#endif
+		if (frameDuration <= maxFrameDuration) {
+			Sleep(maxFrameDuration - frameDuration);
 		}
-		else {
-			Sleep(maxFrameDuration - frameDuration) ;
-		}
-		firstLoop = false;
+
 	}
+
 	return true;
 }
 
 /**
- * @brief Update the current scene
+ * @brief Update the current scene更新scene
  *
  * @return false if error
  */
 bool SceneManager::_update() {
 	/* get inputs */
-	Inputs::update();
+	//Inputs::update();
+
 
 	/* update */
 	//ABaseUI::staticUpdate();
-	_gui->preUpdate(_dtTime);
+	//_gui->preUpdate(_dtTime);
 	//bool cheatCodeClosed = false;
 
-	///* debug menu */
-	//if (_sceneMap[SceneNames::DEBUG_MENU]->update() == false) {
-	//	return false;
-	//}
+	/* scene */
+	
+	if (_sceneMap[_scene]->update() == false) {
+		std::cout<<"Unexpected error when updating scene"<<"\n";
+		return false;
+	}
 
-	///* cheatcode */
-	//if (_isInCheatCode || _showCheatCodeTextTime > 0) {
-	//	 text only mode
-	//	if (_showCheatCodeTextTime > 0) {
-	//		reinterpret_cast<SceneCheatCode *>(_sceneMap[SceneNames::CHEAT_CODE])->isCmdLnEnabled = false;
-	//		_showCheatCodeTextTime -= _dtTime * 1000;
-	//		if (_showCheatCodeTextTime < 0)
-	//			_showCheatCodeTextTime = 0;
-	//	}
-	//	else {
-	//		reinterpret_cast<SceneCheatCode *>(_sceneMap[SceneNames::CHEAT_CODE])->isCmdLnEnabled = true;
-	//	}
-	//	 update scene
-	//	if (_sceneMap[SceneNames::CHEAT_CODE]->update() == false) {
-	//		openCheatCode(false);  // close cheat code
-	//		cheatCodeClosed = true;
-	//	}
-	//}
+	//防止更新的时候退出
+	if (isSceneChangedInCurFrame())
+		_gui->disableExitForThisFrame();
 
-	///* scene */
-	//if (!_isInCheatCode && !cheatCodeClosed) {
-	//	 update the scene
-	//	if (_sceneMap[_scene]->update() == false) {
-	//		logErr("Unexpected error when updating scene");
-	//		return false;
-	//	}
-	//}
-
-	//if (isSceneChangedInCurFrame())
-	//	_gui->disableExitForThisFrame();
-
-	//_gui->postUpdate(_dtTime);
+	/*_gui->postUpdate(_dtTime);*/
 
 	return true;
 }
@@ -280,15 +254,15 @@ bool SceneManager::_draw() {
 
 	// draw the scene
 	if (_sceneMap[_scene]->draw() == false) {
-		logErr("Unexpected error when drawing scene");
+		std::cout<<"Unexpected error when drawing scene"<<"\n";
 		return false;
 	}
 
 	// draw cheatcode scene
-	
+
 
 	// draw debug menu scene
-	
+
 
 	_gui->postDraw();
 
@@ -301,7 +275,7 @@ bool SceneManager::_draw() {
  * @param name the scene name
  * @return AScene* a pointer to the scene loaded
  */
-Scene * SceneManager::loadScene(std::string const & name) {
+Scene* SceneManager::loadScene(std::string const& name) {
 	return SceneManager::get()._loadScene(name);
 }
 /**
@@ -310,7 +284,7 @@ Scene * SceneManager::loadScene(std::string const & name) {
  * @param name the scene name
  * @return AScene* a pointer to the scene loaded
  */
-Scene * SceneManager::_loadScene(std::string const & name) {
+Scene* SceneManager::_loadScene(std::string const& name) {
 	if (get()._sceneMap.find(name) == get()._sceneMap.end()) {
 		logErr("invalid scene name: " << name << " in loadScene");
 		return _sceneMap[_scene];
@@ -323,7 +297,8 @@ Scene * SceneManager::_loadScene(std::string const & name) {
 	_sceneMap[_scene]->unload();  // unload last scene
 	try {
 		_sceneMap[name]->load();  // load new scene (getScene return the name of the last scene)
-	} catch (std::exception const &e) {
+	}
+	catch (std::exception const& e) {
 		logErr("Error: " << e.what());
 	}
 	_scene = name;
@@ -336,7 +311,7 @@ Scene * SceneManager::_loadScene(std::string const & name) {
  * @param name the name of the scene to get
  * @return AScene* a pointer to the scene
  */
-Scene * SceneManager::getScene(std::string const & name) {
+Scene* SceneManager::getScene(std::string const& name) {
 	return SceneManager::get()._getScene(name);
 }
 /**
@@ -345,7 +320,7 @@ Scene * SceneManager::getScene(std::string const & name) {
  * @param name the name of the scene to get
  * @return AScene* a pointer to the scene
  */
-Scene * SceneManager::_getScene(std::string const & name) {
+Scene* SceneManager::_getScene(std::string const& name) {
 	if (get()._sceneMap.find(name) == get()._sceneMap.end()) {
 		logErr("invalid scene name: " << name << " in getScene");
 		return _sceneMap[_scene];
@@ -358,7 +333,7 @@ Scene * SceneManager::_getScene(std::string const & name) {
  *
  * @return std::string const& the current scene name
  */
-std::string const & SceneManager::getSceneName() {
+std::string const& SceneManager::getSceneName() {
 	return SceneManager::get()._getSceneName();
 }
 /**
@@ -366,7 +341,7 @@ std::string const & SceneManager::getSceneName() {
  *
  * @return std::string const& the current scene name
  */
-std::string const & SceneManager::_getSceneName() const {
+std::string const& SceneManager::_getSceneName() const {
 	return _scene;
 }
 
@@ -382,23 +357,23 @@ std::string const & SceneManager::_getSceneName() const {
 //	return clampFps;
 //}
 //
-///**
-// * @brief Return if the scene has changed in the current frame
-// *
-// * @return true If the scene changed in the current frame
-// */
-//bool SceneManager::isSceneChangedInCurFrame() {
-//	return SceneManager::get()._isSceneChangedInCurFrame();
-//}
-///**
-// * @brief Return if the scene has changed in the current frame
-// *
-// * @return true If the scene changed in the current frame
-// */
-//bool SceneManager::_isSceneChangedInCurFrame() const {
-//	return _sceneLoadedCurrentFrame;
-//}
-//
+/**
+ * @brief Return if the scene has changed in the current frame
+ *
+ * @return true If the scene changed in the current frame
+ */
+bool SceneManager::isSceneChangedInCurFrame() {
+	return SceneManager::get()._isSceneChangedInCurFrame();
+}
+/**
+ * @brief Return if the scene has changed in the current frame
+ *
+ * @return true If the scene changed in the current frame
+ */
+bool SceneManager::_isSceneChangedInCurFrame() const {
+	return _sceneLoadedCurrentFrame;
+}
+
 ///**
 // * @brief Open or force close cheat code command line
 // *

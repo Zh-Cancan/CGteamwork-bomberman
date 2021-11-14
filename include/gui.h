@@ -47,6 +47,7 @@ class Gui {
 		void	preDraw();
 		void	postDraw();
 		void	enableCursor(bool enable);
+		void	disableExitForThisFrame(bool disable = true);
 	    //ÆäËû»æÍ¼º¯Êý
 
 		GameInfo		&gameInfo;  

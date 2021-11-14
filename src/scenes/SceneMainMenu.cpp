@@ -52,6 +52,11 @@ void SceneMainMenu::load() {
  */
 bool	SceneMainMenu::update() {
 	SceneMenu::update();
+	if (true) {
+		_states.continueGame = false;
+		SceneManager::loadScene(SceneNames::LEVEL_SELECTION);
+		return;
+	}
 	if (_states.continueGame) {
 		_states.continueGame = false;
 		SceneManager::loadScene(SceneNames::LEVEL_SELECTION);

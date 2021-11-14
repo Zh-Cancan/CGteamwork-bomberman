@@ -69,6 +69,15 @@ void Gui::enableCursor(bool enable) {
 	}
 }
 
+/**
+ * @brief In this frame, the update function cannot exit
+ *
+ * @param disable True to enable this functionality
+ */
+void	Gui::disableExitForThisFrame(bool disable) {
+	_exitMenuDisabled = disable;
+}
+
 // -- draw ---------------------------------------------------------------------
 /**
  * @brief call this function to do stuff before drawing scene

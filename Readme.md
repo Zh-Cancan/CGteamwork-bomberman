@@ -19,3 +19,14 @@
 5、简单视角移动
 
 6、后续：阴影 / 爆炸效果 / 光源 / ……
+
+### 游戏逻辑部分
+与原github相比删除了pause，difficulty selection，help,时间限制，游戏存档，积分获取 的部分
+整个游戏的运行逻辑封装在bomberman()函数中
+initSetting函数生成了setting.json文件，据此来进行初始化
+
+关于skybox在gui中的连接，可尝试在注释位置中添加
+
+json.hpp input jsonSetting 文件无改动
+
+在测试游戏逻辑时玩家进行上下左右的移动并没有使用SDL库，使用了单独的Player::operate函数,这里后续可能需要统一

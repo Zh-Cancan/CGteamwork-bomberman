@@ -56,12 +56,13 @@ bool	SceneLevelSelection::update() {
 	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
 
 	//UI element
-
+	
+	//对所有关卡数进行遍历绘制
 	for (uint32_t i = 0; i < _states.nbLevel; i++) {
 		//ABaseUI & elem = getUIElement(_states.firstLevelID + i);
 
 		/* create a smooth transition */
-		float xoffset = -(_currentLvl * winSz.x) + _transition * winSz.x;
+		/*float xoffset = -(_currentLvl * winSz.x) + _transition * winSz.x;
 		if (_transition > 0) {
 			_transition -= TRANSITION_SPEED;
 			if (_transition <= 0)
@@ -71,9 +72,10 @@ bool	SceneLevelSelection::update() {
 			_transition += TRANSITION_SPEED;
 			if (_transition >= 0)
 				_transition = 0;
-		}
+		}*/
 		//elem.setPosOffset(glm::vec2(xoffset, 0));
 	}
+	//选择了该关卡
 	if (_states.loadLevel) {
 		_states.loadLevel = false;
 		if (_transition == 0) {  // load only if the transition is over
@@ -82,18 +84,11 @@ bool	SceneLevelSelection::update() {
 					return false;
 				}
 			} catch (std::exception const &e) {
-				logErr("Error: " << e.what());
-				//SceneCheatCode & scCheatCode = *reinterpret_cast<SceneCheatCode *>(
-					//SceneManager::getScene(SceneNames::CHEAT_CODE)
-				//);
-				//scCheatCode.clearAllLn();
-				std::stringstream ss;
-				ss << "Level " << _currentLvl << ": " << e.what();
-				//logErrScreen(ss.str());
-				//scCheatCode.unlockLevel(_currentLvl + 1);
+				std::cout << "Level " << _currentLvl << ": " << e.what()<<"\n";
 				SceneManager::loadScene(SceneNames::LEVEL_SELECTION);
 				return true;
 			}
+			//成功选择了关卡
 			SceneManager::loadScene(SceneNames::GAME);
 			return true;
 		}

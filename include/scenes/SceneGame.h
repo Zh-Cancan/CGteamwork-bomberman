@@ -27,7 +27,6 @@
 
 class Player;
 class AEnemy;
-class Spawner;
 
 namespace GameState {
 	/**
@@ -145,7 +144,7 @@ protected:
 		//ABaseUI *	bonusShieldText;  /**< TextUI for bonusShieldText */
 	};
 	//AllUI		allUI;  /**< All UI elements */
-	bool		_loadHelp;  /**< true if you want to load help menu */
+	//bool		_loadHelp;  /**< true if you want to load help menu */
 
 	void			_initGameInfos();
 	void			_loadGameInfos();
@@ -163,15 +162,7 @@ public:
 	//std::vector< std::vector< std::vector<AEntity *> > >	boardFly;  /**< The fly board with all static flying elements */
 	Player						*player;  /**< The player */
 	std::vector<AEnemy *>		enemies;  /**< All enemies */
-	/**
-	 * @brief Bonus Information about spawn (number of bonus & chance to spawn)
-	 */
-	struct BonusValues {
-		int64_t	chance;  /**< Chance to have a bonus */
-		int64_t	nb;  /**< Number of bonus on the level */
-	};
-	std::unordered_map<std::string, BonusValues>	bonus;  /**< All bonus information about spawn */
-	std::vector<Spawner *>		spawners;  /**< All spawners */
+	
 
 	int							flags;  /**< Number of flags on the level */
 	glm::uvec2					size;  /**< Level size */
@@ -181,7 +172,6 @@ public:
 	uint32_t					levelCrispies;  /**< Number of crispies wall in the level */
 	float						levelTime;  /**< Time to do the level */
 	float						time;  /**< Time remaining to do the level */
-	//Score						score;  /**< Score object */
 	int64_t						enemiesToKill;  /**< Enemy to kill to enable end element & finish the level */
 	int64_t						enemiesKilled;  /**< Number of enemies killed */
 	std::string					musicLevel;  /**< The level music */
@@ -211,13 +201,13 @@ public:
 	//bool			clearFromBoard(AEntity *entity, glm::vec2 pos);
 	bool			positionInGame(glm::vec3 pos, glm::vec3 sz = glm::vec3(1, 1, 1));
 	bool			updateBlurMaskTex(std::vector<uint8_t> const &aMaskData);
-	void			blurFilterBefore();
-	void			blurFilterAfter();
+	//void			blurFilterBefore();
+	//void			blurFilterAfter();
 
 	// SceneGame methods
 	virtual bool	init();
 	virtual bool	update();
-	virtual bool	postUpdate();
+	//virtual bool	postUpdate();
 	virtual void	load();
 	virtual void	unload();
 	virtual bool	draw();

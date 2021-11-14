@@ -62,7 +62,7 @@ bool	SceneMenu::update() {
  */
 bool	SceneMenu::draw() {
 
-	std::cout << "I'm drawing --sceneMenu\n";
+	//std::cout << "I'm drawing --sceneMenu\n";
 	/* update alpha mask used for blur effect */
 
 	/* 3d background */
@@ -96,6 +96,7 @@ void SceneMenu::unload() {
  */
 bool SceneMenu::_initBG() {
 	//UI
+
 	return true;
 }
 

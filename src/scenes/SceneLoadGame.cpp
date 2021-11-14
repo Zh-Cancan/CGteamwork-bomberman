@@ -208,27 +208,10 @@ bool	SceneLoadGame::update() {
 				//previewGameUI.title->setText(gameSaved->game->s("Filename"));
 				std::time_t dateLastmodified = static_cast<std::time_t>(gameSaved->game->i("date_lastmodified"));
 				std::tm localTime = *std::localtime(&dateLastmodified);
-				std::stringstream ss;
-				ss << std::put_time(&localTime, "%d/%m/%Y at %H:%M:%S");
-				//previewGameUI.date->setText(ss.str());
-				std::string gameDifficulty = "Difficulty: ";
-				if (gameSaved->game->u("difficulty") == 1)
-					gameDifficulty += "Hard Core";
-				else if (gameSaved->game->u("difficulty") == 2)
-					gameDifficulty += "Medium";
-				else if (gameSaved->game->u("difficulty") == 3)
-					gameDifficulty += "Easy";
-				else
-					gameDifficulty += "Beginner";
-				//previewGameUI.gameDifficulty->setText(gameDifficulty);
+				
 				std::string lvlDone = "Levels done: ";
 				lvlDone += std::to_string(gameSaved->game->lj("levels").list.size());
 				//previewGameUI.levelsDone->setText(lvlDone);
-				int64_t scoreTotal = 0;
-				for (auto level : gameSaved->game->lj("levels").list) {
-					scoreTotal += level->i("score");
-				}
-				//previewGameUI.scoreTotal->setText("Total points: " + std::to_string(scoreTotal));
 			}
 			if (gameSaved->gameID == _selectedGame) {
 				//gameSaved->ui->setSelected(false);

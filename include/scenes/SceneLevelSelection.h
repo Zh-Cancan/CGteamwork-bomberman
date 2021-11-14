@@ -3,6 +3,7 @@
 #include "SceneMenu.h"
 
 #define TRANSITION_SPEED 0.05
+#define TOTAL_LEVEL 10//总的关卡数
 
 /**
  * @brief menu for the level selection
@@ -31,7 +32,7 @@ class SceneLevelSelection : public SceneMenu {
 		 */
 		struct ButtonsStates {
 			uint32_t	firstLevelID;  /**< Id of UI for the first level */
-			uint32_t	nbLevel;  /**< Number of levels */
+			uint32_t	nbLevel=10;  /**< Number of levels */
 			bool		loadLevel;  /**< True if we clicked on the button loadLevel */
 			bool		menu;  /**< True if we clicked on the button menu */
 			bool		lastLevel;  /**< True if we clicked on the button lastLevel */

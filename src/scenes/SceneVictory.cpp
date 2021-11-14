@@ -20,19 +20,8 @@ SceneVictory & SceneVictory::operator=(SceneVictory const & rhs) {
 	return *this;
 }
 
-/**
- * @brief init the menu
- *
- * @return true if the init succeed
- * @return false if the init failed
- */
+
 bool			SceneVictory::init() {
-	glm::vec2 winSz = _gui->gameInfo.windowSize;
-	glm::vec2 tmpPos;
-	glm::vec2 tmpSize;
-	float menuWidth = winSz.x / 2;
-	float menuHeight = winSz.y / 14;
-	float statisticHeight = menuHeight * 0.6;
 
 	//UI
 	
@@ -40,25 +29,20 @@ bool			SceneVictory::init() {
 	return true;
 }
 
-/**
- * @brief this is the update function (called every frames)
- *
- * @return true if the update is a success
- * @return false if there are an error in update
- */
+
 bool	SceneVictory::update() {
 	SceneMenu::update();
 	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
-	if (s.j("debug").b("3d-menu")) {
-		scGame.updateForMenu();
-	}
+	
+	scGame.updateForMenu();
+
 	
 	//¸üÐÂUI
 
 	if (_states.nextLevel) {
 		
 		_states.nextLevel = false;
-		if (scGame.level + 1 < static_cast<int32_t>(scGame.getNbLevel())) {
+		if (scGame.level + 1 < 10) {
 			try {
 				// reload the current level
 				if (!scGame.loadLevel(scGame.level + 1)) {
@@ -95,9 +79,7 @@ bool	SceneVictory::update() {
 	return true;
 }
 
-/**
- * @brief called when the scene is loaded
- */
+
 void SceneVictory::load() {
 	SceneMenu::load();
 	if (SceneManager::getSceneName() != SceneNames::EXIT) {
@@ -105,20 +87,14 @@ void SceneVictory::load() {
 	}
 }
 
-/**
- * @brief this is the draw function (called every frames)
- *
- * @return true if the draw is a success
- * @return false if there are an error in draw
- */
+
 bool SceneVictory::draw() {
 	bool ret = true;
 
 	/* 3d background */
-	if (s.j("debug").b("3d-menu")) {
-		SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
-		ret = scGame.drawVictory();  // draw the game if possible
-	}
+	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
+	ret = scGame.drawVictory();  
+	
 	ret = SceneMenu::draw();
 	return ret & true;
 }

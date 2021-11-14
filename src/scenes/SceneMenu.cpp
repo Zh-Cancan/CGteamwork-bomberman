@@ -3,18 +3,18 @@
 
 
 SceneMenu::SceneMenu(Gui * gui, float const &dtTime)
-: Scene(gui, dtTime),
+ :_gui(gui),
+  _dtTime(dtTime),
   _blurEnabled(true) {}
 
-/**
- * @brief Destroy the ASceneMenu::ASceneMenu object
- */
+
 SceneMenu::~SceneMenu() {
 	//删除UI 比如button
 }
 
 SceneMenu::SceneMenu(SceneMenu const &src)
-: Scene(src) {
+: _gui(src._gui),
+  _dtTime(src._dtTime) {
 	*this = src;
 }
 
@@ -27,13 +27,7 @@ SceneMenu &SceneMenu::operator=(SceneMenu const &rhs) {
 	return *this;
 }
 
-/**
- * @brief Cout operator
- *
- * @param os The ostream object
- * @param myClass The class to cout
- * @return std::ostream& the ostream object
- */
+
 std::ostream &	operator<<(std::ostream & os, const SceneMenu& myClass) {
 	(void)myClass;
 	os << "<ASceneMenu object>";
@@ -47,11 +41,13 @@ std::ostream &	operator<<(std::ostream & os, const SceneMenu& myClass) {
  * @return 是否更新成功
  */
 bool	SceneMenu::update() {
-	if (s.j("debug").b("3d-menu")) {
-		SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
-		scGame.updateForMenu();
-	}
+	
+	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
+	scGame.updateForMenu();
+	
 	/* UI elements */
+	//UI update
+
 	return true;
 }
 
@@ -71,20 +67,16 @@ bool	SceneMenu::draw() {
 	
 	return  true;
 }
-/**
- * @brief called when the scene is loaded
- */
+
 void SceneMenu::load() {
 	_gui->enableCursor(true);
 }
-/**
- * @brief called when the scene is unloaded
- */
+
 void SceneMenu::unload() {
 }
 
 
-//add UI elements
+//add UI elements function
 
 
 

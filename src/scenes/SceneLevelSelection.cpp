@@ -1,7 +1,5 @@
 #include "../../include/scenes/SceneLevelSelection.h"
 #include "../../include/scenes/SceneGame.h"
-//#include "Save.hpp"
-//#include "SceneCheatCode.hpp"
 #include "../../include/scenes/SceneManager.h"
 
 
@@ -28,13 +26,7 @@ SceneLevelSelection & SceneLevelSelection::operator=(SceneLevelSelection const &
 
 
 bool			SceneLevelSelection::init() {
-	glm::vec2 winSz = _gui->gameInfo.windowSize;
-	glm::vec2 tmpPos;
-	glm::vec2 tmpSize;
-	float menuWidth = winSz.x / 2;
-	float menuHeight = menuWidth / 8;
-	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
-
+	
 	_transition = 0;  // reset transition
 
 	//init UI element
@@ -50,36 +42,19 @@ bool			SceneLevelSelection::init() {
  */
 bool	SceneLevelSelection::update() {
 	SceneMenu::update();
-	// size of the window
-	glm::vec2 winSz = _gui->gameInfo.windowSize;
-	// SceneGame reference
-	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
-
-	//UI element
 	
-	//对所有关卡数进行遍历绘制
-	for (uint32_t i = 0; i < _states.nbLevel; i++) {
-		//ABaseUI & elem = getUIElement(_states.firstLevelID + i);
+	//UI element
+	//在这里通过控件获得当前关卡数_currentLvl
 
-		/* create a smooth transition */
-		/*float xoffset = -(_currentLvl * winSz.x) + _transition * winSz.x;
-		if (_transition > 0) {
-			_transition -= TRANSITION_SPEED;
-			if (_transition <= 0)
-				_transition = 0;
-		}
-		if (_transition < 0) {
-			_transition += TRANSITION_SPEED;
-			if (_transition >= 0)
-				_transition = 0;
-		}*/
-		//elem.setPosOffset(glm::vec2(xoffset, 0));
-	}
-	//选择了该关卡
-	if (_states.loadLevel) {
+	SceneGame& scGame = *reinterpret_cast<SceneGame*>(SceneManager::getScene(SceneNames::GAME));
+	//选择了某一关卡
+	if (true) {
+	/*if (_states.loadLevel) {*/
 		_states.loadLevel = false;
+		_transition = 0;
 		if (_transition == 0) {  // load only if the transition is over
 			try {
+				_currentLvl = 1;
 				if (!scGame.loadLevel(_currentLvl)) {
 					return false;
 				}
@@ -117,7 +92,7 @@ bool	SceneLevelSelection::update() {
 void SceneLevelSelection::load() {
 	SceneMenu::load();
 	_transition = 1;
-	//setLevel(Save::getLastUnlockedLevel());
+	setLevel(1);//从第一关开始
 }
 
 

@@ -3,19 +3,11 @@
 #include "../include/utils/opengl/Inputs.h"
 #include "../include/scenes/SceneManager.h"
 
-/* ------------------------------ GameInfo struct ---------------------------*/
-GameInfo::GameInfo() {
-	title = "bomberman";
-	windowSize = {
-		s.j("graphics").i("width"),
-		s.j("graphics").i("height")
-	};
-	quit = false;
-}
+
 
 /* ----------------------------------- Gui ----------------------------------*/
-Gui::Gui(GameInfo &gameInfo)
-: gameInfo(gameInfo)
+Gui::Gui()
+: quit(false)
 {}
 
 Gui::~Gui() {
@@ -25,7 +17,7 @@ Gui::~Gui() {
 }
 
 Gui::Gui(Gui const &src)
-: gameInfo(src.gameInfo) {
+: quit(src.quit) {
 	*this = src;
 }
 
@@ -85,7 +77,7 @@ void	Gui::disableExitForThisFrame(bool disable) {
 void Gui::preDraw() {
 	// clear buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, gameInfo.windowSize.x, gameInfo.windowSize.y);
+	glViewport(0, 0, 800,600);
 	glClearColor(0.2, 0.5, 0.95, 1.0);
 }
 

@@ -1,31 +1,5 @@
 #include "../include/Wall.h"
 Wall::Wall(){
-    //fstream f;
-    //f.open("C:\\Users\\1234\\Desktop\\bomberGameLogical\\map.txt");
-    //if(!f){
-    //    cout<<"open error!"<<endl;
-    //    exit(0);
-    //}
-    //int i=0;
-    //while(!f.eof()){
-    //    string row;
-    //    getline(f, row);
-    //    for(int j=0;j<MAPSIZE;j++){
-    //        if(row[j]=='#')
-    //            walls[i][j]=1;
-    //        else {
-    //            walls[i][j] = 0;
-    //            if (row[j] == 'p')
-    //                this->p_pos.set(i, j);
-    //            else if (row[j] == 'e') {
-    //                POS temp;
-    //                temp.set(i, j);
-    //                this->e_pos.push_back(temp);
-    //            }
-    //        }
-    //    }
-    //    i++;
-    //}
 }
 bool Wall::InitWall(string filepath) {
     fstream f;

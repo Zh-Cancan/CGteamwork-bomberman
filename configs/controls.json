@@ -1,0 +1,15 @@
+{
+	"keys": {
+		"action": 44,
+		"action_2": 5,
+		"cancel": 41,
+		"cheatcode": 56,
+		"confirm": 40,
+		"down": 81,
+		"left": 80,
+		"menu": 43,
+		"right": 79,
+		"show help": 58,
+		"up": 82
+	}
+}

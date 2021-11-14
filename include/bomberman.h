@@ -15,6 +15,7 @@
 #define USERDATA_FILE			CONFIG_DIR"userData.json"
 #define CHEATCODE_HIST_FILE		CONFIG_DIR"history.cheatcode"
 #define SAVE_DIR				"saves/"
+#define MAP_DIR				    "assets/map/"
 
 //暂未使用
 #define PLAYER_SIZE			glm::vec3(1.2, 1.2, 1.2)

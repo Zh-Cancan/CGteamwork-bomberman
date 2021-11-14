@@ -1,0 +1,109 @@
+{
+	"imgsUI": "bomberman-assets/imgs/UI/",
+	"loadingImgs": "bomberman-assets/imgs/levels",
+	"loadingSentences": "bomberman-assets/loading/load-sentences.txt",
+	"mapsPath": "bomberman-assets/maps",
+	"mouse_sensitivity": 0.1,
+	"cheatcode": {
+		"historySize": 1000,
+		"maxLinesShow": 25,
+		"timeLineShow": 5000
+	},
+	"colors": {
+		"background": {
+			"alpha": 255,
+			"color": 1579032
+		},
+		"bg-rect": {
+			"alpha": 85,
+			"color": 16315631
+		},
+		"bg-rect-border": {
+			"alpha": 255,
+			"color": 13591674
+		},
+		"black": {
+			"alpha": 255,
+			"color": 1579032
+		},
+		"blue": {
+			"alpha": 255,
+			"color": 6585294
+		},
+		"blue-light": {
+			"alpha": 255,
+			"color": 9740743
+		},
+		"boundingBox": {
+			"alpha": 255,
+			"color": 1399852
+		},
+		"buttons": {
+			"alpha": 255,
+			"color": 6585294
+		},
+		"buttons-border": {
+			"alpha": 255,
+			"color": 1579032
+		},
+		"buttons-disable": {
+			"alpha": 255,
+			"color": 9740743
+		},
+		"collider": {
+			"alpha": 255,
+			"color": 6585294
+		},
+		"font": {
+			"alpha": 255,
+			"color": 1579032
+		},
+		"orange": {
+			"alpha": 255,
+			"color": 13599846
+		},
+		"red": {
+			"alpha": 255,
+			"color": 13591674
+		},
+		"white": {
+			"alpha": 255,
+			"color": 16315631
+		}
+	},
+	"debug": {
+		"3d-menu": true,
+		"show": {
+			"baseBoard": true,
+			"boundingBox": false,
+			"entity": true,
+			"flyHeight": false,
+			"movingCollider": false,
+			"staticCollider": false,
+			"terrain": true
+		}
+	},
+	"fonts": {
+		"base": {
+			"file": "bomberman-assets/fonts/snakebold.ttf",
+			"size": 20
+		},
+		"cheatcode": {
+			"file": "bomberman-assets/fonts/monaco.ttf",
+			"size": 6
+		},
+		"text": {
+			"file": "bomberman-assets/fonts/BalooPaaji2-Regular.ttf",
+			"size": 10
+		}
+	},
+	"graphics": {
+		"height": 800,
+		"width": 1200,
+		"fitToScreen": false,
+		"fullscreen": false
+	},
+	"screen": {
+		"fps": 60
+	}
+}

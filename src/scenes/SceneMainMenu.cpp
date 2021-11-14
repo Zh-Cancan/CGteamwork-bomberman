@@ -26,12 +26,6 @@ SceneMainMenu & SceneMainMenu::operator=(SceneMainMenu const & rhs) {
  * @return 初始化是否成功
  */
 bool			SceneMainMenu::init() {
-	glm::vec2 winSz = _gui->gameInfo.windowSize;
-	glm::vec2 tmpPos;
-	glm::vec2 tmpSize;
-	float menuWidth = winSz.x / 2;
-	float menuHeight = winSz.y / 14;
-
 	//UI
 
 	return true;
@@ -52,21 +46,10 @@ void SceneMainMenu::load() {
  */
 bool	SceneMainMenu::update() {
 	SceneMenu::update();
-	if (true) {
-		_states.continueGame = false;
-		SceneManager::loadScene(SceneNames::LEVEL_SELECTION);
-		return;
-	}
-	if (_states.continueGame) {
-		_states.continueGame = false;
-		SceneManager::loadScene(SceneNames::LEVEL_SELECTION);
-	}
-	if (_states.newGame) {
+	if(true){
+	/*if (_states.newGame) {*/
 		_states.newGame = false;
-	}
-	else if (_states.loadGame) {
-		_states.loadGame = false;
-		SceneManager::loadScene(SceneNames::LOADGAME);
+		SceneManager::loadScene(SceneNames::LEVEL_SELECTION);
 	}
 	else if (_states.exit) {
 		_states.exit = false;

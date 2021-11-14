@@ -25,11 +25,6 @@ SceneGameOver & SceneGameOver::operator=(SceneGameOver const & rhs) {
 
 
 bool			SceneGameOver::init() {
-	glm::vec2 winSz = _gui->gameInfo.windowSize;
-	glm::vec2 tmpPos;
-	glm::vec2 tmpSize;
-	float menuWidth = winSz.x / 2;
-	float menuHeight = winSz.y / 14;
 
 	//UI
 
@@ -40,9 +35,8 @@ bool			SceneGameOver::init() {
 bool	SceneGameOver::update() {
 	SceneMenu::update();
 	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
-	if (s.j("debug").b("3d-menu")) {
-		scGame.updateForMenu();
-	}
+	
+	scGame.updateForMenu();
 
 	if (_states.restart) {
 		
@@ -78,10 +72,9 @@ bool SceneGameOver::draw() {
 	bool ret = true;
 
 	/* 3d background */
-	if (s.j("debug").b("3d-menu")) {
-		SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
-		ret = scGame.drawGameOver();  // draw the game if possible
-	}
+	SceneGame & scGame = *reinterpret_cast<SceneGame *>(SceneManager::getScene(SceneNames::GAME));
+	ret = scGame.drawGameOver();  // draw the game if possible
+	
 	ret = SceneMenu::draw();
 	return ret & true;
 }

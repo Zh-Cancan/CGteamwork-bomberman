@@ -12,19 +12,13 @@
 #include "../../include/scenes/SceneGame.h"
 #include "../../include/scenes/SceneGameOver.h"
 #include "../../include/scenes/SceneVictory.h"
-#include "../../include/scenes/SceneExit.h"
-#include "../../include/scenes/SceneLoadGame.h"
-#include "../../include/scenes/SceneEndGame.h"
-//#include "SceneDebug.hpp"
-#include "../../include/scenes/SceneLoading.h"
-//#include "SceneHelp.hpp"
+
 
 /**
  * @brief Construct a new Scene Manager:: Scene Manager object
  */
 SceneManager::SceneManager()
 	:_isInit(false),
-	_gameInfo(),
 	_gui(nullptr),
 	_dtTime(0.0f),
 	_scene(SceneNames::GAME),
@@ -86,19 +80,17 @@ bool SceneManager::_init() {
 	}
 
 	// GUI创建
-	_gui = new Gui(_gameInfo);
+	_gui = new Gui();
 	if (!_gui->init()) {
 		return false;
 	}
 
-	/* 创建loading scene */
-	_scene = SceneNames::GAME;
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME, new SceneGame(_gui, _dtTime))); 
-	/*_scene = SceneNames::LOADING;
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::LOADING, new SceneLoading(_gui, _dtTime)));*/
+	/* 创建MainMenu */
+	_scene = SceneNames::MAIN_MENU;
+	_sceneMap.insert(std::pair<std::string, SceneMenu*>(SceneNames::MAIN_MENU, new SceneMainMenu(_gui, _dtTime)));
 	try {
 		if (_sceneMap[_scene]->init() == false) {
-			std::cout << "failed to init scene: loading";
+			std::cout << "failed to init scene: mainMenu";
 			return false;
 		}
 	}
@@ -107,13 +99,13 @@ bool SceneManager::_init() {
 		return false;
 	}
 
-	//try {
-	//	_sceneMap[_scene]->load();  // load first scene
-	//}
-	//catch (std::exception const& e) {
-	//	std::cout << "Error : " << e.what();
-	//	return false;
-	//}
+	try {
+		_sceneMap[_scene]->load();  // load first scene
+	}
+	catch (std::exception const& e) {
+		std::cout << "Error : " << e.what();
+		return false;
+	}
 
 	/* draw */
 	Inputs::update();
@@ -128,21 +120,16 @@ bool SceneManager::_init() {
 
 
 	// create and init all scene
-	/*_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::MAIN_MENU, new SceneMainMenu(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::LEVEL_SELECTION,
+	
+	_sceneMap.insert(std::pair<std::string, SceneMenu*>(SceneNames::LEVEL_SELECTION,
 		new SceneLevelSelection(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME, new SceneGame(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME_OVER, new SceneGameOver(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::VICTORY, new SceneVictory(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::EXIT, new SceneExit(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::LOADGAME, new SceneLoadGame(_gui, _dtTime)));
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::END_GAME, new SceneEndGame(_gui, _dtTime)));*/
-	_sceneMap.insert(std::pair<std::string, Scene*>(SceneNames::GAME, new SceneGame(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, SceneMenu*>(SceneNames::GAME, new SceneGame(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, SceneMenu*>(SceneNames::GAME_OVER, new SceneGameOver(_gui, _dtTime)));
+	_sceneMap.insert(std::pair<std::string, SceneMenu*>(SceneNames::VICTORY, new SceneVictory(_gui, _dtTime)));
+	
 
 	for (auto it = _sceneMap.begin(); it != _sceneMap.end(); it++) {
 		try {
-			if (it->first == SceneNames::LOADING)
-				continue;
 			if (it->second->init() == false) {
 				std::cout << "failed to init scene: " << it->first;
 				return false;
@@ -183,19 +170,19 @@ bool SceneManager::_run(float maxFrameDuration) {
 		lastLoopMs = getMs();
 		_fps = 1 / _dtTime;
 
-		/*if (_sceneMap.find(_scene) == _sceneMap.end()) {
+		if (_sceneMap.find(_scene) == _sceneMap.end()) {
 			std::cout << "invalid scene name: " << _scene << "\n";
-		}*/
-		/*else {*/
+		}
+		else {
 			/* update & draw scene */
 			if (_update() == false)
 				return false;
 			if (_draw() == false)
 				return false;
-		/*}*/
+		}
 
 		/* quit if it's the end of the game */
-		if (_gameInfo.quit) {
+		if (_gui->quit) {
 			break;
 		}
 
@@ -275,7 +262,7 @@ bool SceneManager::_draw() {
  * @param name the scene name
  * @return AScene* a pointer to the scene loaded
  */
-Scene* SceneManager::loadScene(std::string const& name) {
+SceneMenu* SceneManager::loadScene(std::string const& name) {
 	return SceneManager::get()._loadScene(name);
 }
 /**
@@ -284,7 +271,7 @@ Scene* SceneManager::loadScene(std::string const& name) {
  * @param name the scene name
  * @return AScene* a pointer to the scene loaded
  */
-Scene* SceneManager::_loadScene(std::string const& name) {
+SceneMenu* SceneManager::_loadScene(std::string const& name) {
 	if (get()._sceneMap.find(name) == get()._sceneMap.end()) {
 		logErr("invalid scene name: " << name << " in loadScene");
 		return _sceneMap[_scene];
@@ -311,7 +298,7 @@ Scene* SceneManager::_loadScene(std::string const& name) {
  * @param name the name of the scene to get
  * @return AScene* a pointer to the scene
  */
-Scene* SceneManager::getScene(std::string const& name) {
+SceneMenu* SceneManager::getScene(std::string const& name) {
 	return SceneManager::get()._getScene(name);
 }
 /**
@@ -320,7 +307,7 @@ Scene* SceneManager::getScene(std::string const& name) {
  * @param name the name of the scene to get
  * @return AScene* a pointer to the scene
  */
-Scene* SceneManager::_getScene(std::string const& name) {
+SceneMenu* SceneManager::_getScene(std::string const& name) {
 	if (get()._sceneMap.find(name) == get()._sceneMap.end()) {
 		logErr("invalid scene name: " << name << " in getScene");
 		return _sceneMap[_scene];
@@ -345,18 +332,7 @@ std::string const& SceneManager::_getSceneName() const {
 	return _scene;
 }
 
-///**
-// * @brief get the current fps count
-// *
-// * @return uint16_t the current fps count
-// */
-//uint16_t	SceneManager::getFps() {
-//	uint16_t clampVal = s.j("screen").u("fps");
-//	uint16_t clampFps = SceneManager::get()._fps;
-//	clampFps = (clampFps < clampVal) ? clampFps : clampVal;
-//	return clampFps;
-//}
-//
+
 /**
  * @brief Return if the scene has changed in the current frame
  *
@@ -374,70 +350,7 @@ bool SceneManager::_isSceneChangedInCurFrame() const {
 	return _sceneLoadedCurrentFrame;
 }
 
-///**
-// * @brief Open or force close cheat code command line
-// *
-// * @param open True to open cheat code command line
-// */
-//void SceneManager::openCheatCode(bool open) {
-//	SceneManager::get()._openCheatCode(open);
-//}
-///**
-// * @brief Open or force close cheat code command line
-// *
-// * @param open True to open cheat code command line
-// */
-//void SceneManager::_openCheatCode(bool open) {
-//	if (_isInCheatCode == open)  // if state didn't changed
-//		return;
-//	if (open) {
-//		_showCheatCodeTextTime = 0;
-//		if (reinterpret_cast<SceneCheatCode *>(_sceneMap[SceneNames::CHEAT_CODE])->getText().size() == 0)
-//			reinterpret_cast<SceneCheatCode *>(_sceneMap[SceneNames::CHEAT_CODE])->setText(CHEATCODE_DEF_TXT);
-//		_sceneMap[SceneNames::CHEAT_CODE]->load();
-//	}
-//	else {
-//		_sceneMap[SceneNames::CHEAT_CODE]->unload();
-//	}
-//	_isInCheatCode = open;
-//}
-//
-///**
-// * @brief Open cheatcode text for a certain time
-// *
-// * @param ms The time to open cheatcode text
-// */
-//void SceneManager::openCheatCodeForTime(uint64_t ms) {
-//	SceneManager::get()._openCheatCodeForTime(ms);
-//}
-///**
-// * @brief Open cheatcode text for a certain time
-// *
-// * @param ms The time to open cheatcode text
-// */
-//void SceneManager::_openCheatCodeForTime(uint64_t ms) {
-//	if (ms == 0 || static_cast<int64_t>(ms) > _showCheatCodeTextTime) {
-//		_showCheatCodeTextTime = ms;
-//	}
-//}
-//
-///**
-// * @brief Know if we are in cheat code mode
-// *
-// * @return true If cheat code command line is open
-// */
-//bool SceneManager::isCheatCodeOpen() {
-//	return SceneManager::get()._isCheatCodeOpen();
-//}
-///**
-// * @brief Know if we are in cheat code mode
-// *
-// * @return true If cheat code command line is open
-// */
-//bool SceneManager::_isCheatCodeOpen() const {
-//	return _isInCheatCode;
-//}
-//
+
 /**
  * @brief quit the game
  */
@@ -448,20 +361,6 @@ void SceneManager::quit() {
  * @brief quit the game
  */
 void SceneManager::_quit() {
-	_gameInfo.quit = true;
+	_gui->quit = true;
 }
 
-///* exception */
-///**
-// * @brief Construct a new Scene Manager:: Scene Manager Exception:: Scene Manager Exception object
-// */
-//SceneManager::SceneManagerException::SceneManagerException()
-//: std::runtime_error("SceneManager Exception") {}
-//
-///**
-// * @brief Construct a new Scene Manager:: Scene Manager Exception:: Scene Manager Exception object
-// *
-// * @param whatArg Error message
-// */
-//SceneManager::SceneManagerException::SceneManagerException(const char* whatArg)
-//: std::runtime_error(std::string(std::string("SceneManagerException: ") + whatArg).c_str()) {}

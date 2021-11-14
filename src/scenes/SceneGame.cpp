@@ -70,24 +70,13 @@ SceneGame::SceneGame(Gui * gui, float const &dtTime)
   _blurFbo{0, 0},
   _blurTexColor{0, 0} {
 	player = nullptr;
-	enemies = std::vector<AEnemy *>();
-	flags = 0;
 	size = {0, 0};
 	level = NO_LEVEL;
 	state = GameState::PLAY;
-	levelTime = 0;
-	time = 0;
-	levelEnemies = 0;
-	levelCrispies = 0;
 	//_terrain = nullptr;
 	//_blurShader = 0;
 	_rbo = 0;
 	_blurMaskTex = 0;
-	enemiesToKill = 0;
-	enemiesKilled = 0;
-	_alarm = false;
-	//_loadHelp = false;
-	
 }
 
 /**
@@ -99,11 +88,6 @@ SceneGame::~SceneGame() {
 	if (player != nullptr) {
 		delete player;
 	}
-
-	for (auto it = _mapsList.begin(); it != _mapsList.end(); it++) {
-		delete *it;
-	}
-	_mapsList.clear();
 
 	//删除模型
 
@@ -146,60 +130,13 @@ SceneGame &SceneGame::operator=(SceneGame const &rhs) {
 		//board = rhs.board;
 		//boardFly = rhs.boardFly;
 		player = rhs.player;
-		enemies = rhs.enemies;
-		flags = rhs.flags;
 		size = rhs.size;
 		level = rhs.level;
 		state = rhs.state;
-		levelTime = rhs.levelTime;
-		time = rhs.time;
-		levelEnemies = rhs.levelEnemies;
-		levelCrispies = rhs.levelCrispies;
-		enemiesToKill = rhs.enemiesToKill;
-		enemiesKilled = rhs.enemiesKilled;
 	}
 	return *this;
 }
 
-/**
- * @brief Cout operator
- *
- * @param os The ostream object
- * @param myClass The class to cout
- * @return std::ostream& The ostream obj
- */
-std::ostream &	operator<<(std::ostream & os, const SceneGame& myClass) {
-	os << myClass.print();
-	return (os);
-}
-
-/**
- * print params.
- */
-std::string		SceneGame::print() const {
-	std::string		str;
-	str = "SceneGame info: [" + std::to_string(size.x) + ", "
-	+ std::to_string(size.y) + "]";
-
-	return str;
-}
-
-/**
- * @brief clear entity at position pos from board.
- *
- * @param entity
- * @param pos
- * @return true if cleared
- * @return false if not found
- */
-//bool			SceneGame::clearFromBoard(AEntity *entity, glm::vec2 pos) {
-//	std::vector<AEntity *> &box = board[pos.x][pos.y];
-//	std::vector<AEntity *>::iterator find = std::find(box.begin(), box.end(), entity);
-//	if (find == box.end())
-//		return false;
-//	box.erase(find);
-//	return true;
-//}
 
 /**
  * @brief Check if the given pos is in the board.
@@ -218,7 +155,6 @@ bool	SceneGame::positionInGame(glm::vec3 pos, glm::vec3 sz) {
  * @brief called when the scene is loaded
  */
 void SceneGame::load() {
-	_alarm = false;
 	/*if (_gui->cam->getMode() == CamMode::FOLLOW_PATH) {
 		state = GameState::INTRO;
 	}*/
@@ -234,181 +170,12 @@ void SceneGame::load() {
 void SceneGame::unload() {
 }
 
-/**
- * @brief Insert an entity in the game
- *
- * @param name Entity name
- * @param pos Entity position
- * @param isFly If entity is flying
- * @param wallGenPercent Percentage of wall generation
- * @return false If failed
- */
-bool SceneGame::insertEntity(std::string const & name, glm::ivec2 pos, bool isFly, uint64_t wallGenPercent) {
-	//AEntity * entity;
 
-	///* if out of board */
-	//if (!positionInGame({pos.x, 0, pos.y})) {
-	//	return false;
-	//}
 
-	///* if invalid entity name */
-	//if (entitiesCall.find(name) == entitiesCall.end()) {
-	//	logErr("invalid entity name " << name << " in SceneGame::insertEntity");
-	//	return false;
-	//}
 
-	///* if already an entity */
-	//if (isFly) {
-	//	if (boardFly[pos.x][pos.y].size() > 0)
-	//		return false;
-	//}
-	//else {
-	//	if (board[pos.x][pos.y].size() > 0)
-	//		return false;
-	//}
 
-	//// if it's empty, generate crispy wall with a certain probability
-	//if (name == "empty" && !isFly)
-	//	entity = Crispy::generateCrispy(*this, wallGenPercent);
-	//else
-	//	entity = entitiesCall[name].entity(*this);
 
-	//// do nothing on empty block
-	//if (entity == nullptr)
-	//	return true;
 
-	//if (isFly) {
-	//	if (entity->type == Type::WALL) {
-	//		reinterpret_cast<AObject *>(entity)->isInFlyBoard = true;
-	//		boardFly[pos.x][pos.y].push_back(entity);
-	//	}
-	//	else if (entitiesCall[name].entityType == EntityType::ENEMY) {
-	//		enemies.push_back(reinterpret_cast<AEnemy *>(entity));
-	//		enemies.back()->setPosition({pos.x, 1, pos.y});
-	//	}
-	//	else {
-	//		logWarn("board fly can only contains walls and enemy");
-	//	}
-	//}
-	//else {  // if not fly
-	//	switch (entitiesCall[name].entityType) {
-	//		case EntityType::PLAYER:
-	//			if (player == nullptr) {
-	//				player = reinterpret_cast<Player *>(entity);
-	//				player->init();
-	//				entity = nullptr;  // to avoid to call init a second time
-	//			}
-	//			else {
-	//				delete entity;
-	//				entity = nullptr;
-	//			}
-	//			player->setPosition({pos.x, 0, pos.y});
-	//			break;
-	//		case EntityType::BOARD_FLAG:
-	//			flags++;
-	//			board[pos.x][pos.y].push_back(entity);
-	//			break;
-	//		case EntityType::BOARD:
-	//			if (entity->type == Type::BOMB) {
-	//				if (player != nullptr) {
-	//					reinterpret_cast<Bomb*>(entity)->setPropagation(player->bombProgation);
-	//				}
-	//				if (board[pos.x][pos.y].size() > 0) {
-	//					delete entity;
-	//					return false;
-	//				}
-	//			}
-	//			board[pos.x][pos.y].push_back(entity);
-	//			break;
-	//		case EntityType::ENEMY:
-	//			if (board[pos.x][pos.y].size() > 0) {
-	//				logWarn("Cannot insert enemy on a block");
-	//				delete entity;
-	//				return false;
-	//			}
-	//			if (reinterpret_cast<AEnemy *>(entity)->getCollision({pos.x, 0, pos.y}).size()) {
-	//				// don't create if we have a other Enemy at the same place
-	//				delete entity;
-	//				return false;
-	//			}
-	//			enemies.push_back(reinterpret_cast<AEnemy *>(entity));
-	//			enemies.back()->setPosition({pos.x, 0, pos.y});
-	//			break;
-	//		default:
-	//			delete entity;
-	//	}
-	//}
-
-	//// init entity
-	//if (entity && !entity->init()) {
-	//	return false;
-	//}
-
-	return true;
-}
-
-// -- getter -------------------------------------------------------------------
-
-/**
- * @brief Get the total number of levels
- *
- * @return uint32_t The number of levels
- */
-uint32_t	SceneGame::getNbLevel() const { return _mapsList.size(); }
-/**
- * @brief Get a level name
- *
- * @param levelId The level ID
- * @return std::string The level name
- */
-std::string	SceneGame::getLevelName(int32_t levelId) const {
-	if (levelId == NO_LEVEL)
-		return "NO_LEVEL";
-	if (static_cast<int32_t>(_mapsList.size()) <= levelId)
-		throw SceneGameException(("Level " + std::to_string(levelId) + " do not exist.").c_str());
-	return _mapsList[levelId]->s("name");
-}
-/**
- * @brief Get a level image
- *
- * @param levelId The level ID
- * @return std::string The level image path
- */
-std::string	SceneGame::getLevelImg(int32_t levelId) const {
-	if (levelId == NO_LEVEL) {
-		logErr("can't get image for level 'NO_LEVEL'");
-		return "";
-	}
-	return _mapsList[levelId]->s("img");
-}
-
-/**
- * @brief Return JSON Settings of level.
- *
- * @return SettingsJson& JSON Settings of level
- * @throw SceneGameException if error
- */
-SettingsJson	&SceneGame::getSettingsLevel() const {
-	if (level == NO_LEVEL)
-		throw SceneGameException("no level set");
-	if (level > (int32_t)_mapsList.size())
-		throw SceneGameException(("unable to load level " + std::to_string(level)
-		+ ": doesn't exist").c_str());
-	return *(_mapsList[level]);
-}
-
-/**
- * @brief Get the name of all entity
- *
- * @return std::vector<std::string> The names
- */
-std::vector<std::string> SceneGame::getAllEntityNames() {
-	std::vector<std::string> res;
-	/*for (auto && it : entitiesCall) {
-		res.push_back(it.first);
-	}*/
-	return res;
-}
 
 // -- Exceptions errors --------------------------------------------------------
 
@@ -617,8 +384,8 @@ bool	SceneGame::_initPostProcess() {
 		glBindFramebuffer(GL_FRAMEBUFFER, _blurFbo[i]);
 		glBindTexture(GL_TEXTURE_2D, _blurTexColor[i]);
 		//
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _gui->gameInfo.windowSize.x,
-			_gui->gameInfo.windowSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800,
+			600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -633,7 +400,7 @@ bool	SceneGame::_initPostProcess() {
 			glGenRenderbuffers(1, &_rbo);
 			glBindRenderbuffer(GL_RENDERBUFFER, _rbo);
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
-				_gui->gameInfo.windowSize.x, _gui->gameInfo.windowSize.y);
+				800, 600);
 			glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		}
 		// attach depth and stencil to the render buffer
@@ -814,104 +581,6 @@ bool SceneGame::loadLevel(int32_t levelId) {
 	return result;
 }
 
-/**
- * @brief Init the json for a level
- *
- * @param levelId The level ID
- * @return false If failed
- */
-bool	SceneGame::_initJsonLevel(int32_t levelId) {
-	// level$(levelID)
-	std::stringstream ss;
-	ss << "level" << std::setw(2) << std::setfill('0') << levelId;
-	std::string		levelName = ss.str();
-	// $(mapsPath)/$(levelName).json
-	std::string		filename = s.s("mapsPath") + "/" + levelName + ".json";
-	std::cout << filename;
-	if (file::isFile(filename) == false) {
-		return false;  // file does not exist
-	}
-
-	SettingsJson* lvl = new SettingsJson();
-
-	lvl->name(levelName).description("Level map");
-	lvl->add<std::string>(levelName + "Filename", filename);
-
-	// File json definition:
-	lvl->add<std::string>("name");
-	lvl->add<std::string>("img", "bomberman-assets/img/icon_level1");
-	lvl->add<std::string>("music", "");
-	lvl->add<uint64_t>("height", 0).setMin(0).setMax(100);
-	lvl->add<uint64_t>("width", 0).setMin(0).setMax(100);
-	lvl->add<int64_t>("time", 0).setMin(-1).setMax(86400);
-	lvl->add<int64_t>("enemiesToKill", 0).setMin(0).setMax(9999);
-
-	// foreach empty zone, chance to create a wall
-	lvl->add<uint64_t>("wallGenPercent", 40).setMin(0).setMax(100);
-
-	lvl->add<SettingsJson>("objects");
-	// this is outside of the platform (no floor)
-	lvl->j("objects").add<std::string>("outside", ".");
-	// replaced by a crispy wall or nothing (random)
-	lvl->j("objects").add<std::string>("empty", " ");
-	// unique player on game.
-	//lvl->j("objects").add<std::string>(PLAYER_STR, "p");
-	//// destructing element dropped by the player.
-	//lvl->j("objects").add<std::string>(BOMB_STR, "x");
-	//// indestructible element outside the board
-	//lvl->j("objects").add<std::string>(WALL_STR, "w");
-	//// indestructible element of the board
-	//lvl->j("objects").add<std::string>("block", "b");
-	//// destructable element, who can give bonuses randomly
-	//lvl->j("objects").add<std::string>(CRISPY_STR, "c");
-	//// flag to get end
-	//lvl->j("objects").add<std::string>(FLAG_STR, "f");
-	//// end of level when all flag
-	//lvl->j("objects").add<std::string>(END_STR, "e");
-	//// no spawn zone
-	//lvl->j("objects").add<std::string>("safe", "_");
-	///* enemies */
-	//lvl->j("objects").add<std::string>(ENEMY_BASIC_STR, "0");
-	//lvl->j("objects").add<std::string>(ENEMY_WITH_EYE_STR, "1");
-	//lvl->j("objects").add<std::string>(ENEMY_FOLLOW_STR, "2");
-	//lvl->j("objects").add<std::string>(ENEMY_FLY_STR, "3");
-	//lvl->j("objects").add<std::string>(ENEMY_CRISPY_STR, "4");
-	//lvl->j("objects").add<std::string>(ENEMY_FROG_STR, "5");
-
-	SettingsJson* spawnerPattern = new SettingsJson();
-	spawnerPattern->add<std::string>("typeEnemy", "");
-	spawnerPattern->add<uint64_t>("frequency", 5);
-	spawnerPattern->add<SettingsJson>("position");
-	spawnerPattern->j("position").add<uint64_t>("x");
-	spawnerPattern->j("position").add<uint64_t>("y");
-	lvl->addList<SettingsJson>("spawner", spawnerPattern);
-
-	SettingsJson* mapPattern = new SettingsJson();
-	mapPattern->add<std::string>("0", "");
-	mapPattern->add<std::string>("1", "");
-	lvl->addList<SettingsJson>("map", mapPattern);
-
-	lvl->add<SettingsJson>("bonus");
-	//for (auto&& pair : Bonus::bonus) {
-	//	lvl->j("bonus").add<SettingsJson>(pair.first);
-	//	lvl->j("bonus").j(pair.first).add<int64_t>("chance", 0).setMin(0).setMax(100);
-	//	lvl->j("bonus").j(pair.first).add<int64_t>("nb", -1).setMin(-1).setMax(100);
-	//}
-	//try {
-	//	if (lvl->loadFile(filename) == false) {
-	//		// warning when loading settings
-	//		return true;
-	//	}
-	//}
-	//catch (SettingsJson::SettingsException const& e) {
-	//	logErr(e.what());
-	//	return false;
-	//}
-
-	_mapsList.push_back(lvl);
-
-	return true;
-}
 
 /**
  * @brief Unload data of level.
@@ -925,50 +594,12 @@ bool	SceneGame::_unloadLevel() {
 	std::cout<<"Unload level " << level;
 
 	floor.clear();
-	/*for (auto&& box : board) {
-		for (auto&& row : box) {
-			std::vector<AEntity*>::iterator element = row.begin();
-			AEntity* entity;
-			while (element != row.end()) {
-				entity = *element;
-				row.erase(element);
-				delete entity;
-				element = row.begin();
-			}
-		}
-	}
-	board.clear();
-	for (auto&& box : boardFly) {
-		for (auto&& row : box) {
-			std::vector<AEntity*>::iterator element = row.begin();
-			AEntity* entity;
-			while (element != row.end()) {
-				entity = *element;
-				row.erase(element);
-				delete entity;
-				element = row.begin();
-			}
-		}
-	}
-	boardFly.clear();
-	std::vector<AEnemy*>::iterator it = enemies.begin();
-	AEnemy* enemy;
-	while (it != enemies.end()) {
-		enemy = *it;
-		enemies.erase(it);
-		delete enemy;
-		it = enemies.begin();
-	}
-	enemies.clear();*/
-
-
+	
 	// Delete old player
 	delete player;
 	player = nullptr;
 
 	// spawners
-	enemiesToKill = 0;
-	enemiesKilled = 0;
 	
 	level = NO_LEVEL;
 	return true;
@@ -984,13 +615,13 @@ bool	SceneGame::_unloadLevel() {
 bool	SceneGame::_loadLevel(int32_t levelId) {
 	if (levelId == NO_LEVEL)
 		return true;
-	if (levelId > (int32_t)_mapsList.size()) {
+	if (levelId > 10) {//超过最大关卡数
 		std::cout<<"unable to load level " << levelId << ": doesn't exist"<<"\n";
 		return false;
 	}
-	string filepath = "C:\\Users\\1234\\Desktop\\bomberGameLogical\\map.txt";
+	string filepath = homeDir+ MAP_DIR+"//"+"map"+ to_string(levelId)+".txt";
 	level = levelId;  // save new level ID
-	SettingsJson& lvl = *(_mapsList[level]);
+	//SettingsJson& lvl = *(_mapsList[level]);
 	player = new Player(filepath);
 	// Getting json info
 	
@@ -1123,15 +754,14 @@ void	SceneGame::_updateGameInfos() {
  * @return false on failure
  */
 bool	SceneGame::updateBlurMaskTex(std::vector<uint8_t> const& aMaskData) {
-	glm::vec2 winSize = _gui->gameInfo.windowSize;
-
+	
 	// create the texture the first time
 	if (_blurMaskTex == 0) {
 		glGenTextures(1, &_blurMaskTex);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, _blurMaskTex);
 		// create the texture
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, winSize.x, winSize.y, 0, GL_RED,
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8,800, 600, 0, GL_RED,
 			GL_UNSIGNED_BYTE, &aMaskData[0]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -1149,7 +779,7 @@ bool	SceneGame::updateBlurMaskTex(std::vector<uint8_t> const& aMaskData) {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, _blurMaskTex);
 		// update texture data
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, winSize.x, winSize.y, GL_RED,
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 800, 600, GL_RED,
 			GL_UNSIGNED_BYTE, &aMaskData[0]);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

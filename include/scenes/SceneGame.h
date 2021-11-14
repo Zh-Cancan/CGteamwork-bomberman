@@ -8,15 +8,7 @@
 #include "../utils/useGlm.h"
 
 #include "SceneMenu.h"
-//#include "AEntity.hpp"
-//#include "ACharacter.hpp"
-//#include "Bomb.hpp"
-//#include "Score.hpp"
-//#include "Spawner.hpp"
 
-//#include "ABaseUI.hpp"
-//#include "TextUI.hpp"
-//#include "Model.hpp"
 
 #define NO_LEVEL -1  // value is no level loaded
 #define LEVEL_INTRO_DURATION 2
@@ -26,7 +18,6 @@
 #define PP_V_ARRAY_SIZE 24
 
 class Player;
-class AEnemy;
 
 namespace GameState {
 	/**
@@ -41,36 +32,13 @@ namespace GameState {
 	};
 }  // namespace GameState
 
-namespace EntityType {
-	/**
-	 * @brief All possible entity states
-	 */
-	enum Enum {
-		PLAYER,
-		BOARD,
-		BOARD_FLAG,
-		ENEMY,
-	};
-}  // namespace EntityType
-
 /**
  * @brief This is the game Scene. In this scene, you can play to the game and load levels
  */
 class SceneGame : public SceneMenu {
 private:
 	SceneGame();
-	// Members
-	//typedef AEntity*(*entityFuncPtr)(SceneGame &);
-	/**
-	 * @brief Contains a type of entity and a function to create it
-	 */
-	//struct Entity {
-	//	EntityType::Enum	entityType;  /**< The type of the entity */
-	//	entityFuncPtr		entity;  /**< The function to create the entity */
-	//};
-
-	std::vector<SettingsJson *>	_mapsList;  /**<  */
-
+	
 	/**
 	 * @brief All 3D models of enemies that can be drew on different menus
 	 */
@@ -85,9 +53,11 @@ private:
 
 		DrawForMenu();
 	};
+
 	DrawForMenu _menuModels;  /**< All 3D elements to draw */
-	bool		_alarm;  /**< If we want to ring alarm */
+
 	//Model		*_terrain;  /**< The terrain element */
+	
 	// post processing stuff
 	//Shader		*_blurShader;  /**< PostProcess blur shader */
 	static std::array<float, PP_V_ARRAY_SIZE> const	_ppVertices;  /**< Vertices data */
@@ -101,7 +71,6 @@ private:
 	// Methods
 	bool	_loadLevel(int32_t levelId);
 	bool	_unloadLevel();
-	bool	_initJsonLevel(int32_t levelId);
 	bool	_initPostProcess();
 	void	_drawBoard();
 
@@ -109,42 +78,6 @@ protected:
 	/**
 	 * @brief All UI elements (bonus, text, ...)
 	 */
-	struct AllUI {
-		//ABaseUI *	introText;  /**< TextUI for introText */
-		//ABaseUI *	timeLeftImg;  /**< ImageUI for timeLeftImg */
-		//ABaseUI *	timeLeftImgActive;  /**< ImageUI for timeLeftImgActive */
-		//ABaseUI *	timeLeftText;  /**< TextUI for timeLeftText */
-		//ABaseUI *	scoreImg;  /**< ImageUI for scoreImg */
-		//ABaseUI *	scoreImgActive;  /**< ImageUI for scoreImgActive */
-		//ABaseUI *	scoreText;  /**< TextUI for scoreText */
-		//ABaseUI *	lifeImg;  /**< ImageUI for lifeImg */
-		//ABaseUI *	lifeImgActive;  /**< ImageUI for lifeImgActive */
-		//ABaseUI *	lifeText;  /**< TextUI for lifeText */
-		//ABaseUI *	levelNameText;  /**< TextUI for levelNameText */
-		//ABaseUI *	enemiesCounterText;  /**< TextUI for enemiesCounterText */
-		//ABaseUI *	speedImg;  /**< ImageUI for speedImg */
-		//ABaseUI *	speedImgActive;  /**< ImageUI for speedImgActive */
-		//ABaseUI *	speedText;  /**< TextUI for speedText */
-		//ABaseUI *	bonusBombImg;  /**< ImageUI for bonusBombImg */
-		//ABaseUI *	bonusBombImgActive;  /**< ImageUI for bonusBombImgActive */
-		//ABaseUI *	bonusBombText;  /**< TextUI for bonusBombText */
-		//ABaseUI *	bonusFlameImg;  /**< ImageUI for bonusFlameImg */
-		//ABaseUI *	bonusFlameImgActive;  /**< ImageUI for bonusFlameImgActive */
-		//ABaseUI *	bonusFlameText;  /**< TextUI for bonusFlameText */
-		//ABaseUI *	bonusFlampassImg;  /**< ImageUI for bonusFlampassImg */
-		//ABaseUI *	bonusFlampassImgActive;  /**< ImageUI for bonusFlampassImgActive */
-		//ABaseUI *	bonusWallpassImg;  /**< ImageUI for bonusWallpassImg */
-		//ABaseUI *	bonusWallpassImgActive;  /**< ImageUI for bonusWallpassImgActive */
-		//ABaseUI *	bonusDetonatorImg;  /**< ImageUI for bonusDetonatorImg */
-		//ABaseUI *	bonusDetonatorImgActive;  /**< ImageUI for bonusDetonatorImgActive */
-		//ABaseUI *	bonusBombpassImg;  /**< ImageUI for bonusBombpassImg */
-		//ABaseUI *	bonusBombpassImgActive;  /**< ImageUI for bonusBombpassImgActive */
-		//ABaseUI *	bonusShieldImg;  /**< ImageUI for bonusShieldImg */
-		//ABaseUI *	bonusShieldImgActive;  /**< ImageUI for bonusShieldImgActive */
-		//ABaseUI *	bonusShieldText;  /**< TextUI for bonusShieldText */
-	};
-	//AllUI		allUI;  /**< All UI elements */
-	//bool		_loadHelp;  /**< true if you want to load help menu */
 
 	void			_initGameInfos();
 	void			_loadGameInfos();
@@ -161,21 +94,10 @@ public:
 	//std::vector< std::vector< std::vector<AEntity *> > >	board;  /**< The base board with all static elements */
 	//std::vector< std::vector< std::vector<AEntity *> > >	boardFly;  /**< The fly board with all static flying elements */
 	Player						*player;  /**< The player */
-	std::vector<AEnemy *>		enemies;  /**< All enemies */
 	
-
-	int							flags;  /**< Number of flags on the level */
 	glm::uvec2					size;  /**< Level size */
 	int32_t						level;  /**< The current level ID (-1 for no level) */
 	GameState::Enum				state;  /**< Actual game state (PLAY, PAUSE, GAME_OVER, ...) */
-	uint32_t					levelEnemies;  /**< Number of enemies in the level */
-	uint32_t					levelCrispies;  /**< Number of crispies wall in the level */
-	float						levelTime;  /**< Time to do the level */
-	float						time;  /**< Time remaining to do the level */
-	int64_t						enemiesToKill;  /**< Enemy to kill to enable end element & finish the level */
-	int64_t						enemiesKilled;  /**< Number of enemies killed */
-	std::string					musicLevel;  /**< The level music */
-
 	/**
 	 * @brief Stats about number of entites, bombs, ...
 	 */
@@ -194,11 +116,8 @@ public:
 
 	// Operators
 	SceneGame &operator=(SceneGame const &rhs);
-	friend std::ostream& operator<<(std::ostream& os, const SceneGame& myClass);
 
 	// Methods
-	std::string		print() const;
-	//bool			clearFromBoard(AEntity *entity, glm::vec2 pos);
 	bool			positionInGame(glm::vec3 pos, glm::vec3 sz = glm::vec3(1, 1, 1));
 	bool			updateBlurMaskTex(std::vector<uint8_t> const &aMaskData);
 	//void			blurFilterBefore();
@@ -218,14 +137,8 @@ public:
 	bool			drawGameOver();
 	bool			drawEndGame();
 	bool			loadLevel(int32_t levelId);
-	bool			insertEntity(std::string const & name, glm::ivec2 pos, bool isFly = false, uint64_t wallGenPercent = 0);
+	//bool			insertEntity(std::string const & name, glm::ivec2 pos, bool isFly = false, uint64_t wallGenPercent = 0);
 
-	// getter
-	uint32_t		getNbLevel() const;
-	std::string		getLevelName(int32_t levelId) const;
-	std::string		getLevelImg(int32_t levelId) const;
-	SettingsJson	&getSettingsLevel() const;
-	static std::vector<std::string>	getAllEntityNames();
 
 	// Exceptions
 	/**

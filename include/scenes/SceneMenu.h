@@ -3,7 +3,6 @@
 #include <vector>
 #include "../utils/useGlm.h"
 
-#include "Scene.h"
 #include "SceneManager.h"
 
 /* import all UI objects */
@@ -22,7 +21,7 @@ struct	TransparentBox {
 /**
  * @brief Scene object to re-implement in all scenes for menu
  */
-class SceneMenu : public Scene {
+class SceneMenu {
 	public:
 		// Members
 
@@ -58,5 +57,7 @@ class SceneMenu : public Scene {
 		static	std::vector<TransparentBox>	_transparentBoxs;  /**< Transparents box to be blured */
 
 		bool	_initBG();
+		Gui* _gui;
+		float const& _dtTime;
 		
 };

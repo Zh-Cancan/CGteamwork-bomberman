@@ -30,3 +30,7 @@ initSetting函数生成了setting.json文件，据此来进行初始化
 json.hpp input jsonSetting 文件无改动
 
 在测试游戏逻辑时玩家进行上下左右的移动并没有使用SDL库，使用了单独的Player::operate函数,这里后续可能需要统一
+
+窗口大小和关卡数是写死的
+
+一个玩家，多个敌人

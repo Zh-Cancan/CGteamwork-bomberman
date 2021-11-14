@@ -20,25 +20,13 @@
 #include "usingOpengl.h"
 //其他头文件 如天空盒，shader等
 
-/**
- * @brief 游戏信息
- */
-struct GameInfo {
-	std::string	title;  /*窗口标题 */
-	glm::ivec2	windowSize;  /**窗口大小 */
-	glm::ivec2	maxWindowSize;  /*最大窗口大小 */
-	bool		isSavedFullscreen;  /**是否全屏*/
-	bool		quit;  /**是否退出游戏 */
-
-	GameInfo();
-};
 
 /**
  * @brief GUI类初始化窗口，绘图
  */
 class Gui {
 	public:
-		explicit	Gui(GameInfo &gameInfo);
+		explicit	Gui();
 		virtual ~Gui();
 		Gui(Gui const &src);
 		Gui &operator=(Gui const &rhs);
@@ -50,7 +38,7 @@ class Gui {
 		void	disableExitForThisFrame(bool disable = true);
 	    //其他绘图函数
 
-		GameInfo		&gameInfo;  
+		bool       quit;//刚改的，代替GameInfo中的quit
 	//	TextureManager	*textureManager;  /**< TextureManager object */
 	//	Shader			*cubeShader;  /**< CubeShader object */
 	//	Camera			*cam;  /**< Camera object */
@@ -69,7 +57,6 @@ class Gui {
 
 	//	static std::array<float, C_FACE_A_SIZE> const		_cubeFaces;  /**< All cubes faces */
 
-		Gui();  // private, should not be called
 	//	bool	_init();
 	//	bool	_initOpengl();
 	//	bool	_initShaders();
